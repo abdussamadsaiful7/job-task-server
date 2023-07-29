@@ -53,7 +53,21 @@ async function run() {
 
         })
 
-      
+         //update
+         app.put('/allData/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true }
+            const  updateData = req.body;
+            const Data = {
+                $set: {
+                    name: updateData.name,
+                    category: updateData.category,
+                }
+            }
+            const result = await  allDataCollection.updateOne(filter, Data, options)
+            res.send(result);
+        })
 
         
         
