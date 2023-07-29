@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const port = process.env.PORT || 5060;
+const port = process.env.PORT || 5080;
 
 
 //middleware
@@ -30,8 +30,22 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         //await client.connect();
-        // Send a ping to confirm a successful connection
+        
+        const allDataCollection = client.db('jobTaskDB').collection('allData');
 
+        app.get('/allData', async (req, res) => {
+            const cursor = allDataCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.post('/allData', async (req, res) => {
+            const newData = req.body;
+            const result = await allDataCollection.insertOne(newData);
+            res.send(result);
+        })
+
+        
         
 
 
@@ -43,7 +57,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+       // await client.close();
     }
 }
 run().catch(console.dir);
